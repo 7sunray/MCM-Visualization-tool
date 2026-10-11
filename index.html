@@ -24,8 +24,9 @@ nav ul{display:flex;gap:32px;list-style:none;padding:0}
 nav li a{font-weight:600;font-size:15px;text-transform:uppercase;padding-bottom:3px}
 nav li a.on{border-bottom:2px dotted var(--cream)}
 
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-top:clamp(90px,12vh,130px)}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-top:clamp(90px,12vh,130px);overflow:hidden}
 .glow{position:absolute;top:-10%;left:50%;width:70vw;height:60vh;transform:translateX(-50%);background:radial-gradient(ellipse at 30% 40%,rgba(160,50,10,.18),transparent 60%);pointer-events:none}
+.ghost{position:absolute;top:10vh;left:50%;transform:translateX(-50%);font-weight:800;font-size:clamp(6rem,30vw,27rem);line-height:1;color:transparent;-webkit-text-stroke:1.5px rgba(253,235,214,.06);white-space:nowrap;pointer-events:none}
 .kicker{font-weight:600;font-size:clamp(20px,2.2vw,30px);text-transform:uppercase;letter-spacing:-.01em;position:relative;text-align:center;padding:0 16px}
 h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spacing:-.015em;color:var(--cream);position:relative;margin-top:6px}
 .tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:34px;position:relative}
@@ -33,7 +34,7 @@ h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spaci
 .tab:hover{transform:translateY(-1px)}
 .tab[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 22px rgba(255,106,26,.45),inset 0 0 14px rgba(255,106,26,.25)}
 
-.stage{width:100%;max-width:1900px;display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;gap:24px;padding:clamp(40px,8vh,90px) clamp(20px,3.1vw,60px) 80px;margin-top:auto}
+.stage{position:relative;width:100%;max-width:1900px;display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;gap:24px;padding:clamp(40px,8vh,90px) clamp(20px,3.1vw,60px) 80px;margin-top:auto}
 .copy h2{font-weight:600;font-size:clamp(26px,2.4vw,34px);text-transform:uppercase;margin-bottom:10px}
 .copy p{color:var(--muted);font-weight:500;font-size:clamp(18px,1.55vw,22px);line-height:1.45;max-width:28ch}
 .feats{list-style:none;padding:0;display:grid;gap:26px;justify-self:end}
@@ -69,24 +70,42 @@ h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spaci
 .status{text-align:center;color:var(--muted);font-weight:500;font-size:16px;min-height:2.6em;line-height:1.35}
 .status b{color:var(--cream);font-weight:600}
 
+/* what is MCM */
+.about{position:relative;max-width:1400px;margin:0 auto;padding:clamp(70px,12vh,130px) clamp(20px,3.1vw,60px) 80px}
+.about .k{font-weight:600;font-size:15px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.about h2{font-weight:800;font-size:clamp(2.4rem,6.5vw,5.5rem);line-height:1;letter-spacing:-.015em;margin:10px 0 clamp(28px,5vh,56px)}
+.ag{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,5vw,90px);align-items:start}
+.lead{color:var(--muted);font-weight:500;font-size:clamp(18px,1.6vw,23px);line-height:1.55;max-width:46ch}
+.lead + .lead{margin-top:18px}
+.lead b{color:var(--cream);font-weight:600}
+.cap{color:var(--muted);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ex{list-style:none;padding:0;margin-top:10px;border-top:1px dotted rgba(253,235,214,.22)}
+.ex li{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:18px 0;border-bottom:1px dotted rgba(253,235,214,.22);font-weight:600;font-size:clamp(20px,1.8vw,26px)}
+.ex small{display:block;color:var(--muted);font-weight:500;font-size:15px;margin-top:2px;font-variant-numeric:tabular-nums}
+.ex b{font-weight:800;font-size:clamp(28px,3vw,44px);font-variant-numeric:tabular-nums;color:var(--muted)}
+.ex li.win b{color:var(--accent)}
+.ex-note{color:var(--muted);font-weight:500;font-size:16px;margin-top:14px}
+.ex-note b{color:var(--cream);font-weight:600}
+.ideas{list-style:none;padding:36px 0 0;margin-top:clamp(40px,7vh,72px);border-top:1px dotted rgba(253,235,214,.22);display:grid;grid-template-columns:repeat(3,1fr);gap:28px 48px}
+.ideas li{display:flex;gap:20px;align-items:flex-start;color:var(--muted);font-weight:500;font-size:17px;line-height:1.5}
+.ideas li::before{content:"";flex:none;width:26px;height:26px;margin-top:2px;border-radius:50%;border:1.6px dotted var(--cream);background:radial-gradient(circle,var(--cream) 0 2px,transparent 3px)}
+.ideas b{display:block;color:var(--cream);font-weight:600;font-size:20px;margin-bottom:4px}
+.totop{display:inline-block;margin-top:48px;color:var(--muted);font-weight:500;font-size:15px;border-bottom:1px dotted rgba(253,235,214,.35)}
+.totop:hover{color:var(--cream);border-bottom-color:var(--accent)}
+
 .progress{position:fixed;right:0;top:68vh;width:14px;height:20vh;background:rgba(253,235,214,.12);z-index:6}
 .progress i{display:block;width:100%;height:30%;background:var(--cream);transition:height .15s}
 
-/* custom pointer: matrix brackets that wrap whatever you hover */
+/* custom pointer: a glowing dot inside a following ring */
 .has-cursor,.has-cursor *{cursor:none!important}
-#trail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9997}
 .c-dot,.c-br,.c-rip{position:fixed;left:0;top:0;pointer-events:none;z-index:9999}
 .c-dot,.c-br{opacity:0;transition:opacity .25s}
 .c-on .c-dot,.c-on .c-br{opacity:1}
 .c-dot{width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--cream);box-shadow:0 0 9px 1px rgba(255,106,26,.9),0 0 22px 4px rgba(255,106,26,.35);transition:opacity .25s,scale .2s,background .2s}
 .c-on.c-hov .c-dot,.c-on.c-sel .c-dot{opacity:0;transition:none}
 .c-on.c-down .c-dot{opacity:0;transition:none}
-.c-br{--len:12px;color:var(--cream)}
-.c-br::before,.c-br::after{content:"";position:absolute;top:0;bottom:0;width:var(--len);border:2px solid currentColor;transition:border-color .25s,box-shadow .25s,color .25s}
-.c-br::before{left:0;border-right:0;border-radius:9px 0 0 9px}
-.c-br::after{right:0;border-left:0;border-radius:0 9px 9px 0}
-.c-hov .c-br{color:var(--accent)}
-.c-hov .c-br::before,.c-hov .c-br::after{box-shadow:0 0 16px rgba(255,106,26,.55),inset 0 0 10px rgba(255,106,26,.25)}
+.c-br{color:var(--cream);border:1.5px solid currentColor;border-radius:50%;transition:opacity .25s,border-color .25s,box-shadow .25s,color .25s}
+.c-hov .c-br{color:var(--accent);box-shadow:0 0 16px rgba(255,106,26,.55),inset 0 0 10px rgba(255,106,26,.25)}
 .c-rip{width:10px;height:10px;margin:-5px 0 0 -5px;border:2px solid var(--accent);border-radius:50%;animation:rip .65s cubic-bezier(.2,.7,.2,1) forwards}
 @keyframes rip{from{transform:translate(var(--x),var(--y)) scale(1);opacity:.95}to{transform:translate(var(--x),var(--y)) scale(8);opacity:0}}
 
@@ -96,23 +115,22 @@ h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spaci
   .viz{order:-1}
   .feats{justify-self:start}
   .tab{padding:16px 24px;font-size:14px}
+  .ag,.ideas{grid-template-columns:1fr}
 }
-@media (prefers-reduced-motion:reduce){.swap,.tab,.cell,.row,.row .bar i{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.swap,.tab,.cell,.row,.row .bar i{transition:none}}
 </style>
 </head>
 <body>
 <nav>
-  <a class="logo" href="#top">Matrix chain</a>
+  <a class="logo" href="#method">Matrix chain</a>
   <ul>
-    <li><a href="#intro">Intro</a></li>
+    <li><a href="visualizer.html">Visualize</a></li>
     <li><a href="#features">Features</a></li>
-    <li><a class="on" href="#method">Method</a></li>
-    <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
 <main class="hero" id="method">
-  <div class="glow"></div>
+  <div class="glow"></div><div class="ghost" aria-hidden="true">MATRIX</div>
   <p class="kicker">Chain multiplication: choose your method</p>
   <h1>MATRIX</h1>
 
@@ -132,6 +150,31 @@ h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spaci
     <ul class="feats swap" id="feats"></ul>
   </section>
 </main>
+
+<section class="about" id="features">
+  <p class="k">What is MCM?</p>
+  <h2>Matrix chain multiplication</h2>
+  <div class="ag">
+    <div>
+      <p class="lead">Multiplying a long chain of matrices gives the same result however you group them, because matrix multiplication is <b>associative</b>. But the amount of work is not the same.</p>
+      <p class="lead">Matrix chain multiplication (MCM) is the problem of choosing the <b>order</b> that needs the fewest scalar multiplications. You are not multiplying anything yet, only deciding where the parentheses go.</p>
+    </div>
+    <div>
+      <p class="cap">Example · A 10×30 · B 30×5 · C 5×60</p>
+      <ul class="ex">
+        <li class="win"><span>(A B) C<small>10·30·5 + 10·5·60</small></span><b>4,500</b></li>
+        <li><span>A (B C)<small>30·5·60 + 10·30·60</small></span><b>27,000</b></li>
+      </ul>
+      <p class="ex-note">Same answer, <b>6× the work</b>. With dozens of matrices the gap becomes enormous.</p>
+    </div>
+  </div>
+  <ul class="ideas">
+    <li><span><b>Optimal substructure</b>The best order for a chain is built from the best orders of its shorter sub-chains.</span></li>
+    <li><span><b>Overlapping subproblems</b>The same sub-chains come up again and again, so we solve each one once and reuse it.</span></li>
+    <li><span><b>Dynamic programming</b>A table of sub-chain costs finds the best order in O(n³) time instead of trying every possibility.</span></li>
+  </ul>
+  <a class="totop" href="#method">↑ Back to top</a>
+</section>
 <div class="progress" aria-hidden="true"><i id="bar"></i></div>
 
 <script>
@@ -243,19 +286,15 @@ document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', (
   root.classList.add('has-cursor');
   const mk = c => { const e = document.createElement('div'); e.className = c; document.body.appendChild(e); return e; };
   const dot = mk('c-dot'), br = mk('c-br');
-  const cv = document.createElement('canvas'); cv.id = 'trail'; document.body.appendChild(cv);
-  const ctx = cv.getContext('2d');
-  const fit = () => { const d = Math.min(devicePixelRatio || 1, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); };
-  fit(); addEventListener('resize', fit);
 
   const SEL = 'a,button';
   const k = reduce ? 1 : .18;
-  let mx = -200, my = -200, lx = 0, ly = 0, seen = false, down = false, hov = false;
-  const b = {x:0, y:0, w:44, h:44}, parts = [];
+  let mx = -200, my = -200, seen = false, down = false, hov = false;
+  const b = {x:0, y:0, w:44, h:44};
 
   addEventListener('pointermove', e => {
     mx = e.clientX; my = e.clientY;
-    if(!seen){ seen = true; lx = mx; ly = my; b.x = mx - 22; b.y = my - 22; }
+    if(!seen){ seen = true; b.x = mx - 22; b.y = my - 22; }
     root.classList.add('c-on');
   });
   root.addEventListener('mouseleave', () => root.classList.remove('c-on'));
@@ -270,38 +309,14 @@ document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', (
   document.addEventListener('selectionchange', upd);
   addEventListener('pointerup', () => { down = false; root.classList.remove('c-down'); upd(); });
 
-  function spawn(){
-    const dx = mx - lx, dy = my - ly, dist = Math.hypot(dx, dy);
-    if(dist < 5) return;
-    const cnt = Math.min(4, Math.floor(dist / 9) + 1);
-    for(let i = 0; i < cnt; i++){
-      const t = i / cnt;
-      parts.push({x: lx + dx*t, y: ly + dy*t, vx: (Math.random() - .5) * .6, vy: -Math.random() * .7 - .1, life: 1, r: 1 + Math.random() * 2.4, warm: Math.random() < .7});
-    }
-  }
-
   function frame(){
-    const s = down ? 22 : hov ? 44 : 34;
+    const s = down ? 32 : hov ? 56 : 44;
     const tw = s, th = s, tx = mx - s/2, ty = my - s/2;
     b.x += (tx - b.x) * k; b.y += (ty - b.y) * k; b.w += (tw - b.w) * k; b.h += (th - b.h) * k;
     br.style.transform = `translate(${b.x}px,${b.y}px)`;
     br.style.width = b.w + 'px'; br.style.height = b.h + 'px';
-    br.style.setProperty('--len', Math.min(11, b.w / 3) + 'px');
     dot.style.transform = `translate(${mx}px,${my}px)`;
 
-    if(!reduce){
-      spawn();
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      ctx.globalCompositeOperation = 'lighter';
-      for(let i = parts.length - 1; i >= 0; i--){
-        const p = parts[i];
-        p.life -= .028; if(p.life <= 0){ parts.splice(i, 1); continue; }
-        p.x += p.vx; p.y += p.vy;
-        ctx.fillStyle = p.warm ? `rgba(255,106,26,${p.life * .8})` : `rgba(253,235,214,${p.life * .6})`;
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life + .3, 0, 6.283); ctx.fill();
-      }
-    }
-    lx = mx; ly = my;
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
