@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MATRIX — Chain multiplication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0605; --cream:#fdebd6; --chip:#3a2619; --accent:#ff6a1a; --muted:#a39283;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit;margin:0}
+body{background:var(--bg);color:var(--cream);font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;overflow-x:hidden;min-height:100vh}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+nav{position:absolute;inset:0 0 auto 0;display:flex;justify-content:space-between;align-items:center;padding:28px clamp(20px,3.2vw,60px);z-index:5}
+.logo{font-weight:800;font-size:26px;letter-spacing:.01em;text-transform:uppercase}
+nav ul{display:flex;gap:32px;list-style:none;padding:0}
+nav li a{font-weight:600;font-size:15px;text-transform:uppercase;padding-bottom:3px}
+nav li a.on{border-bottom:2px dotted var(--cream)}
+
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding-top:clamp(90px,12vh,130px)}
+.glow{position:absolute;top:-10%;left:50%;width:70vw;height:60vh;transform:translateX(-50%);background:radial-gradient(ellipse at 30% 40%,rgba(160,50,10,.18),transparent 60%);pointer-events:none}
+.kicker{font-weight:600;font-size:clamp(20px,2.2vw,30px);text-transform:uppercase;letter-spacing:-.01em;position:relative;text-align:center;padding:0 16px}
+h1{font-weight:800;font-size:clamp(4rem,17vw,13rem);line-height:.95;letter-spacing:-.015em;color:var(--cream);position:relative;margin-top:6px}
+.tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:34px;position:relative}
+.tab{font:500 17px 'Outfit',sans-serif;text-transform:uppercase;color:var(--cream);background:var(--chip);border:2px solid transparent;border-radius:999px;padding:22px 49px;cursor:pointer;transition:border-color .25s,box-shadow .25s,transform .15s}
+.tab:hover{transform:translateY(-1px)}
+.tab[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 22px rgba(255,106,26,.45),inset 0 0 14px rgba(255,106,26,.25)}
+
+.stage{width:100%;max-width:1900px;display:grid;grid-template-columns:1fr 1.25fr 1fr;align-items:center;gap:24px;padding:clamp(40px,8vh,90px) clamp(20px,3.1vw,60px) 80px;margin-top:auto}
+.copy h2{font-weight:600;font-size:clamp(26px,2.4vw,34px);text-transform:uppercase;margin-bottom:10px}
+.copy p{color:var(--muted);font-weight:500;font-size:clamp(18px,1.55vw,22px);line-height:1.45;max-width:28ch}
+.feats{list-style:none;padding:0;display:grid;gap:26px;justify-self:end}
+.feats li{display:flex;align-items:center;gap:30px;font-weight:500;font-size:clamp(18px,1.6vw,23px)}
+.feats svg{flex:none;width:26px;height:26px}
+.swap{transition:opacity .25s,transform .25s}
+.swap.out{opacity:0;transform:translateY(8px)}
+
+/* visual */
+.viz{width:min(100%,460px);margin:0 auto;display:grid;gap:18px}
+.chain{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{background:var(--chip);border-radius:999px;padding:8px 16px;font-weight:600;font-size:15px}
+.chip small{color:var(--muted);font-weight:500;margin-left:6px}
+.grid{display:grid;grid-template-columns:26px repeat(4,1fr);gap:7px;align-items:stretch}
+.hd{display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:600;font-size:14px}
+.cell{aspect-ratio:1.1;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:600;font-size:clamp(14px,1.3vw,18px);border:2px solid transparent;transition:background .3s,border-color .3s,box-shadow .3s,opacity .3s}
+.cell small{font-size:11px;color:var(--muted);font-weight:500}
+.cell.void{visibility:hidden}
+.cell.todo{background:rgba(58,38,25,.45);color:transparent}
+.cell.todo small{color:transparent}
+.cell.done{background:var(--chip)}
+.cell.cur{background:var(--chip);border-color:var(--accent);box-shadow:0 0 22px rgba(255,106,26,.45),inset 0 0 14px rgba(255,106,26,.25)}
+.cell.best{background:var(--cream);color:#2a170a}.cell.best small{color:#7a5a3c}
+.rows{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) auto;gap:12px;align-items:center;background:rgba(58,38,25,.45);border:2px solid transparent;border-radius:16px;padding:12px 16px;font-weight:600;font-size:15px;transition:background .3s,border-color .3s,box-shadow .3s}
+.row .bar{height:8px;border-radius:99px;background:rgba(253,235,214,.12);overflow:hidden}
+.row .bar i{display:block;height:100%;width:0;background:var(--muted);border-radius:99px;transition:width .5s}
+.row .v{color:transparent;min-width:5ch;text-align:right}
+.row.done{background:var(--chip)} .row.done .v{color:var(--cream)} .row.done .bar i{width:var(--w)}
+.row.cur{background:var(--chip);border-color:var(--accent);box-shadow:0 0 22px rgba(255,106,26,.45),inset 0 0 14px rgba(255,106,26,.25)}
+.row.cur .v{color:var(--cream)} .row.cur .bar i{width:var(--w)}
+.row.best{background:var(--cream);color:#2a170a}.row.best .bar{background:rgba(42,23,10,.18)}.row.best .bar i{background:#2a170a;width:var(--w)}.row.best .v{color:#2a170a}
+.status{text-align:center;color:var(--muted);font-weight:500;font-size:16px;min-height:2.6em;line-height:1.35}
+.status b{color:var(--cream);font-weight:600}
+
+.progress{position:fixed;right:0;top:68vh;width:14px;height:20vh;background:rgba(253,235,214,.12);z-index:6}
+.progress i{display:block;width:100%;height:30%;background:var(--cream);transition:height .15s}
+
+/* custom pointer: matrix brackets that wrap whatever you hover */
+.has-cursor,.has-cursor *{cursor:none!important}
+#trail{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9997}
+.c-dot,.c-br,.c-rip{position:fixed;left:0;top:0;pointer-events:none;z-index:9999}
+.c-dot,.c-br{opacity:0;transition:opacity .25s}
+.c-on .c-dot,.c-on .c-br{opacity:1}
+.c-dot{width:4px;height:4px;margin:-2px 0 0 -2px;border-radius:50%;background:var(--cream);box-shadow:0 0 9px 1px rgba(255,106,26,.9),0 0 22px 4px rgba(255,106,26,.35);transition:opacity .25s,scale .2s,background .2s}
+.c-on.c-hov .c-dot,.c-on.c-sel .c-dot{opacity:0;transition:none}
+.c-on.c-down .c-dot{opacity:0;transition:none}
+.c-br{--len:12px;color:var(--cream)}
+.c-br::before,.c-br::after{content:"";position:absolute;top:0;bottom:0;width:var(--len);border:2px solid currentColor;transition:border-color .25s,box-shadow .25s,color .25s}
+.c-br::before{left:0;border-right:0;border-radius:9px 0 0 9px}
+.c-br::after{right:0;border-left:0;border-radius:0 9px 9px 0}
+.c-hov .c-br{color:var(--accent)}
+.c-hov .c-br::before,.c-hov .c-br::after{box-shadow:0 0 16px rgba(255,106,26,.55),inset 0 0 10px rgba(255,106,26,.25)}
+.c-rip{width:10px;height:10px;margin:-5px 0 0 -5px;border:2px solid var(--accent);border-radius:50%;animation:rip .65s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes rip{from{transform:translate(var(--x),var(--y)) scale(1);opacity:.95}to{transform:translate(var(--x),var(--y)) scale(8);opacity:0}}
+
+@media (max-width:900px){
+  nav ul{gap:16px} nav li a{font-size:13px} .logo{font-size:20px}
+  .stage{grid-template-columns:1fr;gap:34px}
+  .viz{order:-1}
+  .feats{justify-self:start}
+  .tab{padding:16px 24px;font-size:14px}
+}
+@media (prefers-reduced-motion:reduce){.swap,.tab,.cell,.row,.row .bar i{transition:none}}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="#top">Matrix chain</a>
+  <ul>
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a class="on" href="#method">Method</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main class="hero" id="method">
+  <div class="glow"></div>
+  <p class="kicker">Chain multiplication: choose your method</p>
+  <h1>MATRIX</h1>
+
+  <div class="tabs" role="tablist" aria-label="Choose a method">
+    <button class="tab" role="tab" aria-selected="true" data-i="0">Brute force</button>
+    <button class="tab" role="tab" aria-selected="false" data-i="1">Memoized</button>
+    <button class="tab" role="tab" aria-selected="false" data-i="2">Tabulated</button>
+  </div>
+
+  <section class="stage" aria-live="polite">
+    <div class="copy swap"><h2 id="name"></h2><p id="desc"></p></div>
+    <div class="viz swap">
+      <div class="chain" id="chain"></div>
+      <div id="body"></div>
+      <div class="status" id="status"></div>
+    </div>
+    <ul class="feats swap" id="feats"></ul>
+  </section>
+</main>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
+
+<script>
+const methods = [
+  { name:"Brute force",
+    desc:"Try every way to place the parentheses. Always correct, and quickly unaffordable: 4 matrices have 5 orders, 20 matrices have over a billion.",
+    feats:["Checks every split recursively","Time grows exponentially","No table, just the call stack"] },
+  { name:"Memoized",
+    desc:"The same recursion, but each subchain is solved once and remembered. Write it straight from the recurrence and let the cache do the saving.",
+    feats:["Top-down recursion with a cache","O(n³) time, O(n²) space","Closest to the math"] },
+  { name:"Tabulated",
+    desc:"Fill the table by chain length, shortest first. No recursion, and every cell is built from cells that are already finished.",
+    feats:["Bottom-up by chain length","O(n³) time, O(n²) space","Rebuilds the best order from split points"] }
+];
+
+const dims = [40,20,30,10,30], n = 4, sub = ['₁','₂','₃','₄'];
+const m = [], s = [];
+for(let i=0;i<=n;i++){ m[i]=[]; s[i]=[]; m[i][i]=0; }
+for(let len=2; len<=n; len++) for(let i=1; i<=n-len+1; i++){
+  const j = i+len-1; m[i][j] = Infinity;
+  for(let k=i; k<j; k++){
+    const c = m[i][k] + m[k+1][j] + dims[i-1]*dims[k]*dims[j];
+    if(c < m[i][j]){ m[i][j] = c; s[i][j] = k; }
+  }
+}
+const orders = {
+  1:[[3,4],[2,3],[2,4],[1,2],[1,3],[1,4]],
+  2:[[1,2],[2,3],[3,4],[1,3],[2,4],[1,4]]
+};
+const brute = [
+  ["(A₁(A₂(A₃A₄)))",51000],["(A₁((A₂A₃)A₄))",36000],["((A₁A₂)(A₃A₄))",69000],
+  ["((A₁(A₂A₃))A₄)",26000],["(((A₁A₂)A₃)A₄)",48000]
+];
+const fmt = x => x.toLocaleString('en-US');
+const ICON = '<svg viewBox="0 0 26 26" fill="none" stroke="#fdebd6" stroke-width="1.6"><circle cx="13" cy="13" r="11" stroke-dasharray="1.6 2.6"/><circle cx="13" cy="13" r="6.5" stroke-dasharray="1.2 2.4" opacity=".7"/></svg>';
+const $ = id => document.getElementById(id);
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+$('chain').innerHTML = [...Array(n)].map((_,i)=>`<span class="chip">A${sub[i]}<small>${dims[i]}×${dims[i+1]}</small></span>`).join('');
+
+let mode = 0, step = 0, timer;
+
+function total(){ return mode===0 ? brute.length : orders[mode].length; }
+
+function draw(){
+  const N = total(), done = step >= N;
+  if(mode === 0){
+    const bestIdx = 3;
+    $('body').innerHTML = '<div class="rows">' + brute.map(([p,c],i)=>{
+      let cls = i < step ? 'done' : '';
+      if(i === step-1 && !done) cls = 'cur';
+      if(done && i === bestIdx) cls = 'best';
+      return `<div class="row ${cls}"><span>${p}</span><span class="bar"><i style="--w:${c/690}%"></i></span><span class="v">${fmt(c)}</span></div>`;
+    }).join('') + '</div>';
+    $('status').innerHTML = done
+      ? `<b>${fmt(26000)}</b> multiplications is the cheapest of all 5 orders`
+      : step === 0 ? 'Trying every parenthesization…' : `Order ${step} of 5 costs <b>${fmt(brute[step-1][1])}</b>`;
+  } else {
+    const ord = orders[mode], at = new Map(ord.map((p,i)=>[p.join(),i]));
+    let h = '<div class="grid"><span></span>' + [1,2,3,4].map(j=>`<span class="hd">${j}</span>`).join('');
+    for(let i=1;i<=n;i++){
+      h += `<span class="hd">${i}</span>`;
+      for(let j=1;j<=n;j++){
+        if(j < i){ h += '<div class="cell void"></div>'; continue; }
+        if(i === j){ h += '<div class="cell done">0</div>'; continue; }
+        const idx = at.get(i+','+j);
+        let cls = idx < step ? 'done' : 'todo';
+        if(idx === step-1 && !done) cls = 'cur';
+        if(done && i===1 && j===n) cls = 'best';
+        h += `<div class="cell ${cls}">${fmt(m[i][j])}<small>k=${s[i][j]}</small></div>`;
+      }
+    }
+    $('body').innerHTML = h + '</div>';
+    const verb = mode === 1 ? 'solved' : 'filled';
+    if(done) $('status').innerHTML = `Best order <b>((A₁(A₂A₃))A₄)</b> costs <b>${fmt(m[1][n])}</b> multiplications`;
+    else if(step === 0) $('status').textContent = mode === 1 ? 'Recursing from the full chain, caching as it returns…' : 'Filling by chain length, shortest first…';
+    else { const [i,j] = ord[step-1]; $('status').innerHTML = `m[${i},${j}] ${verb}: <b>${fmt(m[i][j])}</b> at split k=${s[i][j]}`; }
+  }
+}
+
+function start(){
+  clearInterval(timer); step = 0; draw();
+  if(reduce){ step = total(); draw(); return; }
+  timer = setInterval(()=>{ step++; if(step > total()+2) step = 0; draw(); }, 1000);
+}
+
+function render(i){
+  const x = methods[i];
+  $('name').textContent = x.name;
+  $('desc').textContent = x.desc;
+  $('feats').innerHTML = x.feats.map(f => `<li>${ICON}<span>${f}</span></li>`).join('');
+  mode = i; start();
+}
+render(0);
+
+const swaps = document.querySelectorAll('.swap');
+document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', () => {
+  const i = +btn.dataset.i;
+  if(i === mode) return;
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', b === btn));
+  swaps.forEach(el => el.classList.add('out'));
+  setTimeout(() => { render(i); swaps.forEach(el => el.classList.remove('out')); }, 250);
+}));
+
+/* custom pointer */
+(() => {
+  if(!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+  const root = document.documentElement;
+  root.classList.add('has-cursor');
+  const mk = c => { const e = document.createElement('div'); e.className = c; document.body.appendChild(e); return e; };
+  const dot = mk('c-dot'), br = mk('c-br');
+  const cv = document.createElement('canvas'); cv.id = 'trail'; document.body.appendChild(cv);
+  const ctx = cv.getContext('2d');
+  const fit = () => { const d = Math.min(devicePixelRatio || 1, 2); cv.width = innerWidth * d; cv.height = innerHeight * d; ctx.setTransform(d,0,0,d,0,0); };
+  fit(); addEventListener('resize', fit);
+
+  const SEL = 'a,button';
+  const k = reduce ? 1 : .18;
+  let mx = -200, my = -200, lx = 0, ly = 0, seen = false, down = false, hov = false;
+  const b = {x:0, y:0, w:44, h:44}, parts = [];
+
+  addEventListener('pointermove', e => {
+    mx = e.clientX; my = e.clientY;
+    if(!seen){ seen = true; lx = mx; ly = my; b.x = mx - 22; b.y = my - 22; }
+    root.classList.add('c-on');
+  });
+  root.addEventListener('mouseleave', () => root.classList.remove('c-on'));
+  document.addEventListener('pointerover', e => { hov = !!(e.target.closest && e.target.closest(SEL)); root.classList.toggle('c-hov', hov); });
+  addEventListener('pointerdown', e => {
+    down = true; root.classList.add('c-down');
+    if(reduce) return;
+    const r = mk('c-rip'); r.style.setProperty('--x', e.clientX + 'px'); r.style.setProperty('--y', e.clientY + 'px');
+    r.addEventListener('animationend', () => r.remove());
+  });
+  const upd = () => root.classList.toggle('c-sel', down && !getSelection().isCollapsed);
+  document.addEventListener('selectionchange', upd);
+  addEventListener('pointerup', () => { down = false; root.classList.remove('c-down'); upd(); });
+
+  function spawn(){
+    const dx = mx - lx, dy = my - ly, dist = Math.hypot(dx, dy);
+    if(dist < 5) return;
+    const cnt = Math.min(4, Math.floor(dist / 9) + 1);
+    for(let i = 0; i < cnt; i++){
+      const t = i / cnt;
+      parts.push({x: lx + dx*t, y: ly + dy*t, vx: (Math.random() - .5) * .6, vy: -Math.random() * .7 - .1, life: 1, r: 1 + Math.random() * 2.4, warm: Math.random() < .7});
+    }
+  }
+
+  function frame(){
+    const s = down ? 22 : hov ? 44 : 34;
+    const tw = s, th = s, tx = mx - s/2, ty = my - s/2;
+    b.x += (tx - b.x) * k; b.y += (ty - b.y) * k; b.w += (tw - b.w) * k; b.h += (th - b.h) * k;
+    br.style.transform = `translate(${b.x}px,${b.y}px)`;
+    br.style.width = b.w + 'px'; br.style.height = b.h + 'px';
+    br.style.setProperty('--len', Math.min(11, b.w / 3) + 'px');
+    dot.style.transform = `translate(${mx}px,${my}px)`;
+
+    if(!reduce){
+      spawn();
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      ctx.globalCompositeOperation = 'lighter';
+      for(let i = parts.length - 1; i >= 0; i--){
+        const p = parts[i];
+        p.life -= .028; if(p.life <= 0){ parts.splice(i, 1); continue; }
+        p.x += p.vx; p.y += p.vy;
+        ctx.fillStyle = p.warm ? `rgba(255,106,26,${p.life * .8})` : `rgba(253,235,214,${p.life * .6})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life + .3, 0, 6.283); ctx.fill();
+      }
+    }
+    lx = mx; ly = my;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+const bar = $('bar');
+function onScroll(){
+  const max = document.documentElement.scrollHeight - innerHeight;
+  bar.style.height = (30 + (max > 0 ? scrollY / max : 0) * 70) + '%';
+}
+addEventListener('scroll', onScroll, {passive:true}); onScroll();
+</script>
+</body>
+</html>
