@@ -124,7 +124,7 @@ document.querySelectorAll('.tab').forEach(btn => btn.addEventListener('click', (
         root.classList.add('c-on');
     });
     root.addEventListener('mouseleave', () => root.classList.remove('c-on'));
-    document.addEventListener('pointerover', e => { hov = !!(e.target.closest && e.target.closest(SEL)); root.classList.toggle('c-hov', hov); });
+    document.addEventListener('pointerover', e => { hov = !!(e.target.closest && e.target.closest(SEL)); root.classList.toggle('c-hov', hov); root.classList.toggle('c-cta', !!(e.target.closest && e.target.closest('.nav-cta'))); });
     addEventListener('pointerdown', e => {
         down = true; root.classList.add('c-down');
         if (reduce) return;

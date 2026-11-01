@@ -1,84 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>MATRIX — Chain multiplication</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styling.css">
-  <script src="script.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MATRIX — Chain multiplication</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
 </head>
-
 <body>
-  <nav>
-    <a class="logo" href="#method">Matrix chain</a>
-    <ul>
-      <li><a href="visualizer.html">Visualize</a></li>
-      <li><a href="#features">Features</a></li>
-    </ul>
-  </nav>
+<nav>
+  <a class="logo" href="#method">Matrix chain</a>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a class="nav-cta" href="visualizer.html">Visualize <span>→</span></a></li>
+  </ul>
+</nav>
 
-  <main class="hero" id="method">
-    <div class="glow"></div>
-    <div class="ghost" aria-hidden="true">MATRIX</div>
-    <p class="kicker">Chain multiplication: choose your method</p>
-    <h1>MATRIX</h1>
+<main class="hero" id="method">
+  <div class="glow"></div><div class="ghost" aria-hidden="true">MATRIX</div>
+  <p class="kicker">Chain multiplication: choose your method</p>
+  <h1>MATRIX</h1>
 
-    <div class="tabs" role="tablist" aria-label="Choose a method">
-      <button class="tab" role="tab" aria-selected="true" data-i="0">Brute force</button>
-      <button class="tab" role="tab" aria-selected="false" data-i="1">Memoized</button>
-      <button class="tab" role="tab" aria-selected="false" data-i="2">Tabulated</button>
+  <div class="tabs" role="tablist" aria-label="Choose a method">
+    <button class="tab" role="tab" aria-selected="true" data-i="0">Brute force</button>
+    <button class="tab" role="tab" aria-selected="false" data-i="1">Memoized</button>
+    <button class="tab" role="tab" aria-selected="false" data-i="2">Tabulated</button>
+  </div>
+
+  <section class="stage" aria-live="polite">
+    <div class="copy swap"><h2 id="name"></h2><p id="desc"></p></div>
+    <div class="viz swap">
+      <div class="chain" id="chain"></div>
+      <div id="body"></div>
+      <div class="status" id="status"></div>
     </div>
-
-    <section class="stage" aria-live="polite">
-      <div class="copy swap">
-        <h2 id="name"></h2>
-        <p id="desc"></p>
-      </div>
-      <div class="viz swap">
-        <div class="chain" id="chain"></div>
-        <div id="body"></div>
-        <div class="status" id="status"></div>
-      </div>
-      <ul class="feats swap" id="feats"></ul>
-    </section>
-  </main>
-
-  <section class="about" id="features">
-    <p class="k">What is MCM?</p>
-    <h2>Matrix chain multiplication</h2>
-    <div class="ag">
-      <div>
-        <p class="lead">Multiplying a long chain of matrices gives the same result however you group them, because
-          matrix multiplication is <b>associative</b>. But the amount of work is not the same.</p>
-        <p class="lead">Matrix chain multiplication (MCM) is the problem of choosing the <b>order</b> that needs the
-          fewest scalar multiplications. You are not multiplying anything yet, only deciding where the parentheses go.
-        </p>
-      </div>
-      <div>
-        <p class="cap">Example · A 10×30 · B 30×5 · C 5×60</p>
-        <ul class="ex">
-          <li class="win"><span>(A B) C<small>10·30·5 + 10·5·60</small></span><b>4,500</b></li>
-          <li><span>A (B C)<small>30·5·60 + 10·30·60</small></span><b>27,000</b></li>
-        </ul>
-        <p class="ex-note">Same answer, <b>6× the work</b>. With dozens of matrices the gap becomes enormous.</p>
-      </div>
-    </div>
-    <ul class="ideas">
-      <li><span><b>Optimal substructure</b>The best order for a chain is built from the best orders of its shorter
-          sub-chains.</span></li>
-      <li><span><b>Overlapping subproblems</b>The same sub-chains come up again and again, so we solve each one once and
-          reuse it.</span></li>
-      <li><span><b>Dynamic programming</b>A table of sub-chain costs finds the best order in O(n³) time instead of
-          trying every possibility.</span></li>
-    </ul>
-    <a class="totop" href="#method">↑ Back to top</a>
+    <ul class="feats swap" id="feats"></ul>
   </section>
-  <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+</main>
+
+<section class="about" id="features">
+  <p class="k">What is MCM?</p>
+  <h2>Matrix chain multiplication</h2>
+  <div class="ag">
+    <div>
+      <p class="lead">Multiplying a long chain of matrices gives the same result however you group them, because matrix multiplication is <b>associative</b>. But the amount of work is not the same.</p>
+      <p class="lead">Matrix chain multiplication (MCM) is the problem of choosing the <b>order</b> that needs the fewest scalar multiplications. You are not multiplying anything yet, only deciding where the parentheses go.</p>
+    </div>
+    <div>
+      <p class="cap">Example · A 10×30 · B 30×5 · C 5×60</p>
+      <ul class="ex">
+        <li class="win"><span>(A B) C<small>10·30·5 + 10·5·60</small></span><b>4,500</b></li>
+        <li><span>A (B C)<small>30·5·60 + 10·30·60</small></span><b>27,000</b></li>
+      </ul>
+      <p class="ex-note">Same answer, <b>6× the work</b>. With dozens of matrices the gap becomes enormous.</p>
+    </div>
+  </div>
+  <ul class="ideas">
+    <li><span><b>Optimal substructure</b>The best order for a chain is built from the best orders of its shorter sub-chains.</span></li>
+    <li><span><b>Overlapping subproblems</b>The same sub-chains come up again and again, so we solve each one once and reuse it.</span></li>
+    <li><span><b>Dynamic programming</b>A table of sub-chain costs finds the best order in O(n³) time instead of trying every possibility.</span></li>
+  </ul>
+  <a class="totop" href="#method">↑ Back to top</a>
+</section>
+<div class="progress" aria-hidden="true"><i id="bar"></i></div>
 
 
 </body>
-
 </html>
